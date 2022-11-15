@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:seed_yap/pages/harvest_page.dart';
 
 const List<String> list = <String>[
   '1월',
@@ -15,30 +14,6 @@ const List<String> list = <String>[
   '11월',
   '12월'
 ];
-
-void main() => runApp(const DropdownButtonApp());
-// _DropDwonButtonState creatState() => _DropDwonButtonState();
-
-class DropdownButtonApp extends StatefulWidget {
-  const DropdownButtonApp({super.key});
-
-  @override
-  State<DropdownButtonApp> createState() => _DropdownButtonAppState();
-}
-
-class _DropdownButtonAppState extends State<DropdownButtonApp> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('DropdownButton Sample')),
-        body: const Center(
-          child: HarvestPage(),
-        ),
-      ),
-    );
-  }
-}
 
 class DropDwonButton extends StatefulWidget {
   const DropDwonButton({super.key});
@@ -76,20 +51,3 @@ class _DropDwonButtonState extends State<DropDwonButton> {
     );
   }
 }
-
-// class BlockPage extends StatelessWidget {
-//   const BlockPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         body: Center(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Image.asset('image/test01.png'),
-//         ],
-//       ),
-//     ));
-//   }
-// }
