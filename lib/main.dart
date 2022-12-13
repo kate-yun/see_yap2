@@ -113,11 +113,11 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('24시간이 지났어요 ㅠㅜ'),
+            title: Text('왜 이렇게 오랜만에 오셨나요ㅠㅠ'),
             actions: [
               TextButton(
                 child:
-                    Text('참 못했어요', style: const TextStyle(color: Colors.green)),
+                    Text('이어서하기', style: const TextStyle(color: Colors.green)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
