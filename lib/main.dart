@@ -5,7 +5,7 @@ import 'package:seed_yap/pages/block_page.dart';
 import 'package:seed_yap/pages/harvest_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-late SharedPreferences prefs;
+late SharedPreferences prefs; // 전역변수 선언
 
 void main() {
   runApp(const MyApp());
@@ -52,23 +52,60 @@ class _HomePageState extends State<HomePage> {
   String _goal = " ";
 
   @override
-  void initState() {
+  Future<void> initState() async {
     WidgetsFlutterBinding.ensureInitialized();
+    // 인스턴스 생성
+    prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    prefs.setInt('goal_set_at', now.millisecondsSinceEpoch);
+    final goal_set = prefs.getString('goal_set') ?? ' ';
+    if (goal_set.isEmpty) {
+      //목표설정페이지로 이동
+    } else {
+      final setAtString = prefs.getString('goal_set_at') ?? ' ';
+      final setAt = DateTime.parse(setAtString);
+      final expiry = setAt.add(const Duration(hours: 24));
+      if (expiry.isBefore(now)) {
+        //24시간이 안지났을때 목표설정화면으로 이동
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('24시간 이내에 클릭하셨습니다.'),
+              actions: [
+                TextButton(
+                  child: Text('참 잘했어요',
+                      style: const TextStyle(color: Colors.green)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        //24시간이 지나서 경고창 띄워주기 .
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('왜 이렇게 오랜만에 오셨나요ㅠㅠ'),
+              actions: [
+                TextButton(
+                  child: Text('이어서하기',
+                      style: const TextStyle(color: Colors.green)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
 
-    // // prefs = SharedPreferences.getInstance();
-    // // // SharedPreference를 불러와서
-    // bool _isGoalSet = prefs.getBool("_isGoalSet") ?? false;
-
-    // // 목표가 있을 시 위에 관리 중인 _isGoalSet 을 true로 잡고
-    // 목표의 내용이 있다면 _goalTextController에 목표 내용 추가
-    // _isGoalSet = true;
-    // _goalTextController.text = '목표목표';
-
-    // final d = DateTime.now();
-    // d.toIso8601String(); ==> SharedPreferences 에 저장할 때
-    // DateTime.parse(dStr); ==> SharedPreferences 에서 불러올 때
-
-    // Widget을 다 그리고 실행
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _check24Hours();
     });
@@ -82,52 +119,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _check24Hours() async {
-    // SharedPreferences에서 시간을 불러온걸 d라고 가정
-    // 지금은 d를 만들어 놓았음
-    DateTime d = DateTime(2022, 11, 14, 23, 59);
     final now = DateTime.now();
-    print(d);
-    final dd = d.add(const Duration(hours: 24));
+    print(now);
+    final dd = now.add(const Duration(hours: 24));
     print(dd);
-    if (now.isBefore(dd)) {
-      //24시간 이내일 경우
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('24시간 이내에 클릭하셨습니다.'),
-            actions: [
-              TextButton(
-                child:
-                    Text('참 잘했어요', style: const TextStyle(color: Colors.green)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('왜 이렇게 오랜만에 오셨나요ㅠㅠ'),
-            actions: [
-              TextButton(
-                child:
-                    Text('이어서하기', style: const TextStyle(color: Colors.green)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
+  //   if (now.isBefore(dd)) {
+  //     //24시간 이내일 경우
+  //     await showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('24시간 이내에 클릭하셨습니다.'),
+  //           actions: [
+  //             TextButton(
+  //               child:
+  //                   Text('참 잘했어요', style: const TextStyle(color: Colors.green)),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   } else {
+  //     await showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('왜 이렇게 오랜만에 오셨나요ㅠㅠ'),
+  //           actions: [
+  //             TextButton(
+  //               child:
+  //                   Text('이어서하기', style: const TextStyle(color: Colors.green)),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -401,4 +435,3 @@ class _HomePageState extends State<HomePage> {
 //     );
 //   }
 // }
-
